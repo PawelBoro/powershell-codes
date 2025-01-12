@@ -97,3 +97,4 @@ Get-Content computers.txt | ForEach-Object { $_.ToUpper() }
 # Get-ChildItem *deleteme* | Remove-Item -Recurse -Force
 # Remove-Item *deleteme* -Recurse -Force
 # Get-ChildItem *deleteme* | ForEach-Object { $_.Delete() }
+#test
