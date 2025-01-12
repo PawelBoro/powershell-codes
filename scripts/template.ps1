@@ -50,4 +50,50 @@ Get-Process | Format-Table Id, Name, @{l = 'VirtualMB'; e = { $_.vm / 1MB } }, @
 Get-Module | Format-Table @{l = 'ModelName'; e = { $_.Name } }, @{l = 'ModelVersion'; e = { $_.Version } }
 Get-Alias gci
 Get-ChildItem ~ -Directory | Format-Wide -Column 4
-#? 12
+#? 12 Filtering and comparisons
+help about_Comparison_Operators
+Get-Process | Where-Object -FilterScript { $_.WorkingSet -gt 100MB }
+Get-Process | Where-Object { $_.WorkingSet -gt 100MB }
+Get-Process | Where-Object { $_.Name -ne 'pwsh' -and $_.ProcessName -ne 'sh' }
+Get-Process | Where-Object { $_.ProcessName -ne 'pwsh' } | Sort-Object -Property VM -Descending | Select-Object -First 10 | Measure-Object -Property VM -Sum
+Get-Command -Module PSReadLine | Where-Object { $_.Name -like 'get*' }
+Get-Command Get-* -Module PSReadLine
+Get-ChildItem /usr/bin | Where-Object { $_.Size -gt 5MB }
+Get-Module | Where-Object { $_.Size -gt 5MB -and $_. }
+Find-Module -Name PS* | Where-Object { $_.Author -like 'Microsoft' }
+Find-Module -Name PS* | Format-Table Version, Author, Name -AutoSize | Select-Object -First 10
+#? 13 Remote control: Onet-to-one and many-to-many
+SSH
+#? 14 Multitasking with Background Jobs
+Start-Job -ScriptBlock { Get-ChildItem }
+Start-ThreadJob -ScriptBlock { Get-ChildItem }
+Get-Command New-Item -Syntax
+Get-Job -Name Job1 | Format-List *
+Get-Job -Name Job1 | Format-Table *
+Receive-Job -Id 1 #Results will be lost
+Receive-Job -Id 1 -Keep #Results will stay
+Remove-Job — This deletes a job, and any output still cached with it, from memory.
+Stop-Job — If a job seems to be stuck, this command terminates it. You can still receive whatever results were generated to that point.
+Wait-Job - This is useful if a script is going to start a job or jobs and you want the script to continue only when
+the job is done. This command forces the shell to stop and wait until the job (or jobs) is completed, and then allows the shell to continue
+Remove-Job -Id 1
+Start-ThreadJob -ScriptBlock { Get-ChildItem / -Recurse -Filter '*.txt' }
+#? 15 Working with many objects, one at a time
+#Parallel function for ForEach-Object
+Get-Content -Path vaultsToCreate.txt |
+ForEach-Object -Parallel {
+    New-AzKeyVault -ResourceGroupName manning -Location 'UK South' -Name $_
+}
+#
+Measure-Command {
+    Get-Content -Path vaultsToCreate.txt |
+    ForEach-Object -ThrottleLimit 10 -Parallel {
+        Write-Output $_
+        Start-Sleep 1
+    }
+}
+Get-Process | Get-Member -MemberType Method
+Get-Content computers.txt | ForEach-Object { $_.ToUpper() }
+# Get-ChildItem *deleteme* | Remove-Item -Recurse -Force
+# Remove-Item *deleteme* -Recurse -Force
+# Get-ChildItem *deleteme* | ForEach-Object { $_.Delete() }
