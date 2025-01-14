@@ -98,3 +98,7 @@ Get-Content computers.txt | ForEach-Object { $_.ToUpper() }
 # Remove-Item *deleteme* -Recurse -Force
 # Get-ChildItem *deleteme* | ForEach-Object { $_.Delete() }
 #test
+#? 16 Variables: A place to store your stuff
+'SRV-02' | Get-Member
+$var = 'SRV-02'
+$computers = 'SRV-02', 'SERVER1', 'localhost'
