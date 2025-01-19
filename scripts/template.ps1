@@ -27,7 +27,7 @@ Update-Module -Name name
 Remove-Module
 #Rest
 Get-PSProvider
-(Get-Content Env:/PSModulePath) -split ':' lub $env:PSModulePath -split ':'
+(Get-Content Env:/PSModulePath) -split ':' -or $env:PSModulePath -split ':'
 # Dodanie ścieżki do zmiennej ścieżki do modułów
 $env:PSModulePath += [System.IO.Path]::PathSeparator + 'C:\Scripts/myModules'
 Import-Module GoogleCloud -Force # Google Cloud Module need to be downloaded first to be found
@@ -59,7 +59,7 @@ Get-Process | Where-Object { $_.ProcessName -ne 'pwsh' } | Sort-Object -Property
 Get-Command -Module PSReadLine | Where-Object { $_.Name -like 'get*' }
 Get-Command Get-* -Module PSReadLine
 Get-ChildItem /usr/bin | Where-Object { $_.Size -gt 5MB }
-Get-Module | Where-Object { $_.Size -gt 5MB -and $_. }
+Get-Module | Where-Object { $_.Size -gt 5MB -and $_.Size -lt 10MB }
 Find-Module -Name PS* | Where-Object { $_.Author -like 'Microsoft' }
 Find-Module -Name PS* | Format-Table Version, Author, Name -AutoSize | Select-Object -First 10
 #? 13 Remote control: Onet-to-one and many-to-many
@@ -102,3 +102,23 @@ Get-Content computers.txt | ForEach-Object { $_.ToUpper() }
 'SRV-02' | Get-Member
 $var = 'SRV-02'
 $computers = 'SRV-02', 'SERVER1', 'localhost'
+[int]$number = Read-Host 'Enter a number'
+$number | Get-Member
+#? 17 Input and Output
+Read-Host 'Name'
+Write-Host 'test' -ForegroundColor Green -BackgroundColor Blue
+Write-Output 'Hello' | Where-Object { $_.length -gt 10 }
+Write-Warning 'Hello'
+Write-Error 'Hello'
+Write-Verbose 'Hello'
+Write-Debug 'Hello'
+Write-Information 'Hello'
+
+Write-Output (100 * 10)
+Write-Host (100 * 10)
+$name = Read-Host 'Name'
+Write-Host $Name -ForegroundColor Yellow
+Read-Host 'Enter name' | Where-Object { $_.Length -gt 5 }
+#? 19 Scrips
+#? 20 cmdletbundings()
+Get-DiskInventory script
