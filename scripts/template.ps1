@@ -122,3 +122,25 @@ Read-Host 'Enter name' | Where-Object { $_.Length -gt 5 }
 #? 19 Scrips
 #? 20 cmdletbundings()
 Get-DiskInventory script
+#? 21
+Get-Content /etc/hosts | Where-Object { $_ -match '^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}' }
+#? 23 Adding logic and loops
+# ForEach
+$array = 1..10
+foreach ($a in $array) {
+    Write-Output $a
+}
+1..5 | ForEach-Object -Parallel { Write-Output "$_" }
+1..5 | ForEach-Object { Write-Output "$_" }
+# While
+$n = 1
+While ($n -le 10) { Write-Output $n; $n++ }
+# Do While
+$date = Get-Date
+do {
+    Write-Output 'Checking if the month is December'
+    $date = $date.AddMonths(1)
+} while ($date.Month -ne 2 )
+# Task
+$items = Get-ChildItem | ForEach-Object { $_.Name }
+foreach ($item in $items) { Write-Output " The character lenght of $item is $(($item).Length) " }
